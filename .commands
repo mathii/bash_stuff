@@ -1,0 +1,50 @@
+##Extra bash commands
+
+## version of wc that works on zipped files
+
+zwc () { 
+    FILES=""
+    ARGS=""
+    numargs=$#
+
+    for ((i=1 ; i <= numargs ; i++))
+    do
+	if [[ $1 == -* ]]
+    	then
+		ARGS=${ARGS}" "$1
+		shift
+	else
+		FILES=$@
+		break
+	fi
+    done
+
+    gunzip -c $FILES | wc $ARGS
+}
+
+##version of head that works on zipped files
+zhead () { 
+    FILES=""
+    ARGS=""
+    numargs=$#
+
+    for ((i=1 ; i <= numargs ; i++))
+    do
+	if [[ $1 == -* ]]
+    	then
+		ARGS=${ARGS}" "$1
+		shift
+	else
+		FILES=( $@ )
+		break
+	fi
+    done
+
+    for FILE in ${FILES[@]}
+    do
+	if [ "${#FILES[@]}" -ne "1" ]; then
+		echo "==> "${FILE}" <=="
+	fi
+	gunzip -c $FILE | head $ARGS
+    done
+}
